@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { PageLayout } from "./components/layout";
+import { data } from "./data";
+import Input from "./components/input";
 
 function App() {
+  const [input, setInput] = useState("");
+
+  const filteredData = input
+    ? data.filter((item) => {
+        const { city, code } = item;
+        const inputValue = input.toLowerCase();
+        return (
+          city.toLowerCase().includes(inputValue) ||
+          code.toString().toLowerCase().includes(inputValue)
+        );
+      })
+    : [];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PageLayout>
+      <Input input={input} setInput={setInput}/>
+
+      {filteredData.map((data) => (
+        <div key={data.id} className="flex gap-3 border-b border-slate-400 p-4">
+          {data.city} :{" "}
+          {Array.isArray(data.code) ? data.code.join(", ") : data.code}
+        </div>
+      ))}
+    </PageLayout>
   );
 }
 
